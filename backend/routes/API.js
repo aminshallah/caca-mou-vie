@@ -1,4 +1,4 @@
-import express from 'express';
+/* import express from 'express';
 import axios from 'axios';
 import Movie from '../entities/movie.js';
 import { appDataSource } from '../datasource.js';
@@ -60,4 +60,4 @@ router.post('/fetch-and-store-movies', async (req, res) => {
   });
 });
 
-export default router;
+export default router; */
