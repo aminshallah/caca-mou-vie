@@ -17,21 +17,31 @@ const fetchAndStoreMovies = async () => {
       },
     };
 
-    const response = await axios.get(
-      `${TMDB_BASE_URL}/movie/popular?language=en-US&page=1`,
-      options
-    );
+    const movieRepository = appDataSource.getRepository(Movie);
+    let allMovies = [];
+    
+    // Fetch multiple pages to get at least 100 movies
+    const totalMovies = 100;
+    const moviesPerPage = 20;
+    const pagesToFetch = Math.ceil(totalMovies / moviesPerPage);
 
-    const movies = response.data.results;
- 
-    const movieDetailsPromises = movies.map((movie) =>
+    for (let page = 1; page <= pagesToFetch; page++) {
+      const response = await axios.get(
+        `${TMDB_BASE_URL}/movie/popular?language=en-US&page=${page}`,
+        options
+      );
+
+      allMovies = allMovies.concat(response.data.results);
+    }
+
+    // Fetch detailed information for each movie
+    const movieDetailsPromises = allMovies.slice(0, totalMovies).map((movie) =>
       axios.get(`${TMDB_BASE_URL}/movie/${movie.id}?language=en-US&append_to_response=credits`, options)
     );
 
     const moviesDetails = await Promise.all(movieDetailsPromises);
 
-    const movieRepository = appDataSource.getRepository(Movie);
-
+    // Insert each movie into the database
     for (const detailResponse of moviesDetails) {
       const movieData = detailResponse.data;
       const newMovie = movieRepository.create({
@@ -61,3 +71,4 @@ router.post('/fetch-and-store-movies', async (req, res) => {
 });
 
 export default router;
+
