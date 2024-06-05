@@ -27,6 +27,7 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 });
+
 router.post('/new', (req, res) => {
   const movieRepository = appDataSource.getRepository(Movie);
   const newMovie = movieRepository.create({
@@ -37,13 +38,17 @@ router.post('/new', (req, res) => {
     mainActors: req.body.mainActors,
     director: req.body.director,
     genre: req.body.genre,
+    posterPath: req.body.posterPath,
   });
-  movieRepository.insert(newMovie);
-  res.status(201).json({
-    message: 'Film successfully created',
-    id: newMovie.id,
-  });
-  console.log(req.body);
+  movieRepository.insert(newMovie)
+    .then(() => {
+      res.status(201).json({
+        message: 'Film successfully created',
+        id: newMovie.id,
+      });
+      console.log(req.body);
+    })
+    .catch(err => res.status(500).json({ message: 'Error while creating the movie', error: err.message }));
 });
 
 router.delete('/:id', function (req, res) {
