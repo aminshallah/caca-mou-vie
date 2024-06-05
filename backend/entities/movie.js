@@ -12,8 +12,34 @@ const Movie = new typeorm.EntitySchema({
       type: String,
       unique: false,
     },
-    date: { type: String },
+    date: {
+      type: String,
+    },
+    synopsis: {
+      type: String,
+      nullable: true,
+    },
+    duration: {
+      type: Number,
+      nullable: true,
+    },
+    mainActors: {
+      type: String,
+      nullable: true,
+    },
+    director: {
+      type: String,
+      nullable: true,
+    },
+    genre: {
+      type: String,
+      nullable: true,
+    },
+    posterPath: {
+      type: String,
+      nullable: true,
+    },
   },
 });
-
 export default Movie;
+
