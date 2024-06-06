@@ -2,16 +2,16 @@ import express from 'express';
 import Movie from '../entities/movie.js';
 import { appDataSource } from '../datasource.js';
 
+
  const router = express.Router();
-/*
-*/
 
 
 router.get('/',(req,res) => {
   const movieRepository = appDataSource.getRepository(Movie);
   movieRepository.find()
     .then(movies => {
-      res.json(movies)});
+    res.json(movies);
+  });
     });
 
 router.get('/:id', async (req, res) => {
@@ -64,6 +64,9 @@ router.delete('/:id', function (req, res) {
       res.status(500).json({ message: 'Error while deleting the movie' });
     });
 });
+
+
+
 /* router.get('/', function (req, res) {
   appDataSource
     .getRepository(Movie)
