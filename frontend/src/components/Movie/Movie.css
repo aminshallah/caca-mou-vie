@@ -71,7 +71,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 30px 30px
+  margin: 30px 30px;
+  background : white;
+  color: white;
 }
 
 .button-row input[type="button"] {

@@ -1,5 +1,6 @@
 import './Movie.css';
 import React, { useEffect, useState, useRef } from 'react';
+import axios from 'axios'
 
 const DEFAULT_MOVIE_VALUES = {
   title: '',
@@ -15,6 +16,8 @@ function Movie({ movie }) {
   const [movieValue, setMovieValue] = useState(DEFAULT_MOVIE_VALUES);
   const [fullscreenMovie, setFullscreenMovie] = useState(null);
   const fullscreenRef = useRef(null);
+  const [rankingValue, setRankingValue] = useState(0)
+  const user = 1;
 
   useEffect(() => {
     setMovieValue({
@@ -36,6 +39,14 @@ function Movie({ movie }) {
   
     const closeFullscreenMovie = () => {
       setFullscreenMovie(null);
+    };
+
+    const sendNote = () => {
+      axios.post('http://localhost:8000/notes/update', { userId: user, filmId: fullscreenMovie.id, note : rankingValue })
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => console.error(error));
     };
   
     return (
@@ -65,11 +76,11 @@ function Movie({ movie }) {
             <p><strong>Genre:</strong> {fullscreenMovie.genre}</p>
             <button onClick={closeFullscreenMovie}>Close</button><div>
             <div className = "button-row">
-            <input type="button" value="💩"  />
-            <input type="button" value="🤒"  />
-            <input type="button" value="😐" onClick={() => setSortOption('Z-A')} />
-            <input type="button" value="🥰" onClick={() => setSortOption('dernieres-sorties')} />
-            <input type="button" value="🥵" onClick={() => setSortOption('A-Z')} />
+            <input type="button" value="💩" onClick={() => {setRankingValue(1); sendNote()}} />
+            <input type="button" value="🤒" onClick={() => {setRankingValue(2); sendNote()}} />
+            <input type="button" value="😐" onClick={() => {setRankingValue(3); sendNote()}} />
+            <input type="button" value="🥰" onClick={() => {setRankingValue(4); sendNote()}} />
+            <input type="button" value="🥵" onClick={() => {setRankingValue(5); sendNote()}} />
 
           </div>
               </div>
