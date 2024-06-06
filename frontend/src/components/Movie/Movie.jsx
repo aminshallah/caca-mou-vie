@@ -69,7 +69,11 @@ import React, { useEffect, useState } from 'react';
 const DEFAULT_MOVIE_VALUES = {
   title: '',
   date: '',
-  // Additional fields can be added here
+  synopsis : '',
+  duration : '',
+  mainActors : '',
+  genre : '',
+  img : ''
 };
 
 function Movie({ movie }) {
@@ -79,13 +83,26 @@ function Movie({ movie }) {
     setMovieValue({
       title: movie.title,
       date: movie.date,
+      synopsis : movie.synospsis,
+      duration : movie.duration,
+      mainActors : movie.mainActors,
+      genre : movie.genre,
+      img : movie.posterPath
     });
   }, [movie]);
 
+
+
+
   return (
     <li>
-      <p>Title: {movieValue.title}</p>
-      <p>Release Date: {movieValue.date}</p>
+      <p>{movieValue.title}</p>
+      <p>{movieValue.date}</p>
+      <p>{movieValue.duration}</p>
+        <img
+          src={`https://image.tmdb.org/t/p/w500${movieValue.img}`}
+          alt={movieValue.title}
+        /> 
     </li>
   );
 }
