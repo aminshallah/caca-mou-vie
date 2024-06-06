@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -78,4 +78,72 @@ img {
   height: auto;
   max-width: 400px;
   max-height: 300px;
+}
+ */
+
+
+ /* Home.css */
+
+/* Home.css */
+
+/* Style pour la liste des films */
+.deroul div{ display:none; }
+.deroul:hover div{ display:block }
+
+input[type="button"] {
+  display: block; /* Changer le display en block pour afficher chaque bouton sur une ligne différente */
+  margin-bottom: 10px; /* Ajouter une marge en bas pour espacer les boutons verticalement */
+}
+
+
+.boutton-add {
+  display : flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.button-add {
+  font-size: 34px; /* Taille de police augmentée */
+  margin: 0px 20px; /* Marge horizontale entre les emojis */
+}
+
+.liste {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Espacement entre les films */
+}
+
+.liste li {
+  margin-bottom: 20px;
+  flex: 0 0 calc(14.2% - 20px); /* Pour afficher environ 7 films par ligne avec un espacement de 20px */
+  border-radius: 10px; /* Bords arrondis */
+  overflow: hidden; /* Pour éviter que les coins arrondis soient coupés */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  transition: transform 0.3s ease; /* Effet de transition */
+}
+
+.liste li:hover {
+  transform: translateY(-5px); /* Légère translation vers le haut au survol */
+}
+
+/* Style pour l'image du film */
+.movie-poster {
+  height: auto; /* Hauteur automatique pour conserver les proportions */
+  max-height: 300px; /* Hauteur maximale de l'image */
+  width: 100%; /* Largeur de l'image à 100% */
+}
+
+
+.search-container {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin-top : 5px
+}
+
+.search-container span {
+  margin-right: 10px;
 }

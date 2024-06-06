@@ -1,70 +1,5 @@
-/* import { useEffect, useState } from 'react';
-import axios from 'axios';
-
-
-const DEFAULT_MOVIE_VALUES = {
-  titre: '',
-  date: '', */
-/*   synopsis : '',
-  mainActor : '',
-  director :  */
-  /* image: '', */
-
-/* }; */
-
-/* function Movie({ movie }) {
-  const [movieValue, setMovieValue] = useState(DEFAULT_MOVIE_VALUES);
-
-  const useFetchMovie = () => { */
-      /*const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZjlmNjAwMzY4MzMzODNkNGIwYjNhNzJiODA3MzdjNCIsInN1YiI6IjY0NzA5YmE4YzVhZGE1MDBkZWU2ZTMxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Em7Y9fSW94J91rbuKFjDWxmpWaQzTitxRKNdQ5Lh2Eo',
-      },
-    }; */
-/* 
-    setMovieValue((prev) => ({
-      ...prev,
-      titre: movie.title,
-      date: movie.release_date,
-    })); */
-
-/*     axios
-      .get(`https://api.themoviedb.org/3/movie/${movie.id}/images`, options)
-      .then((response) => {
-        const imagePath = response.data.backdrops[0]?.file_path || '';
-        setMovieValue((prev) => ({
-          ...prev,
-          image: imagePath,
-        }));
-      })
-      .then((response) => console.log(response))
-      .catch((err) => console.error(err)); */
-/*   };
-
-  useEffect(() => {
-    useFetchMovie();
-  }, [movie.id]);
-
-  return (
-    <li>
-      <p>{movieValue.titre}</p>
-      <p>Sorti le : {movieValue.date}</p>
-      {/* {movieValue.image && (
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movieValue.image}`}
-          alt={movieValue.title}
-        />
-      )} *//* }
-    </li>
-  );
-} */
-
-/* export default Movie; */
-
-import React, { useEffect, useState } from 'react';
+import './Movie.css';
+import React, { useEffect, useState, useRef } from 'react';
 
 const DEFAULT_MOVIE_VALUES = {
   title: '',
@@ -78,12 +13,14 @@ const DEFAULT_MOVIE_VALUES = {
 
 function Movie({ movie }) {
   const [movieValue, setMovieValue] = useState(DEFAULT_MOVIE_VALUES);
+  const [fullscreenMovie, setFullscreenMovie] = useState(null);
+  const fullscreenRef = useRef(null);
 
   useEffect(() => {
     setMovieValue({
       title: movie.title,
       date: movie.date,
-      synopsis : movie.synospsis,
+      synopsis : movie.synopsis,
       duration : movie.duration,
       mainActors : movie.mainActors,
       genre : movie.genre,
@@ -92,19 +29,56 @@ function Movie({ movie }) {
   }, [movie]);
 
 
+  
+    const handleMovieClick = (movie) => {
+      setFullscreenMovie(movie);
+    };
+  
+    const closeFullscreenMovie = () => {
+      setFullscreenMovie(null);
+    };
+  
+    return (
+      <>
+        <li className="movie-item" onClick={() => handleMovieClick(movie)}>
+          <img
+            src={`https://image.tmdb.org/t/p/w500${movieValue.img}`}
+            alt={movieValue.title}
+            className="movie-poster"
+          />
+        </li>
+        {fullscreenMovie && (
+        <div className="fullscreen-overlay" onClick={closeFullscreenMovie}>
+          <div className="fullscreen-modal" onClick={(e) => e.stopPropagation()}>
+            {<img
+              src={`https://image.tmdb.org/t/p/original${fullscreenMovie.posterPath}`}
+              alt={fullscreenMovie.title}
+              className="fullscreen-image"
+            />}
+            <div className="movie-details">
+            <h2>{fullscreenMovie.title}</h2>
+            <p>{fullscreenMovie.synopsis}</p>
+            <p><strong>Date de sortie:</strong> {fullscreenMovie.date}</p>
+            <p><strong>Durée:</strong> {fullscreenMovie.duration} minutes</p>
+            <p><strong>Réalisateur:</strong> {fullscreenMovie.director}</p>
+            <p><strong>Acteurs.ices principaux.les:</strong> {fullscreenMovie.mainActors}</p>
+            <p><strong>Genre:</strong> {fullscreenMovie.genre}</p>
+            <button onClick={closeFullscreenMovie}>Close</button><div>
+            <div className = "button-row">
+            <input type="button" value="💩"  />
+            <input type="button" value="🤒"  />
+            <input type="button" value="😐" onClick={() => setSortOption('Z-A')} />
+            <input type="button" value="🥰" onClick={() => setSortOption('dernieres-sorties')} />
+            <input type="button" value="🥵" onClick={() => setSortOption('A-Z')} />
 
-
-  return (
-    <li>
-      <p>{movieValue.title}</p>
-      <p>{movieValue.date}</p>
-      <p>{movieValue.duration}</p>
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movieValue.img}`}
-          alt={movieValue.title}
-        /> 
-    </li>
-  );
-}
+          </div>
+              </div>
+          </div>
+          </div>
+        </div>
+      )}
+      </>
+    );
+  }
 
 export default Movie;
