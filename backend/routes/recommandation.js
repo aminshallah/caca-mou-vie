@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/recommandation/:userId', async (req, res) => {
   const userId = req.params.userId;
   exec(
-    `python3 backend/recommandation/home.py ${userId}`,
+    `python3 recommandation/home.py ${userId}`,
     async (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
