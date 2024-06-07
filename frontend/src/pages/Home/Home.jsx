@@ -3,6 +3,7 @@ import './Home.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Movie from '../../components/Movie/Movie.jsx';
+import Movie2 from '../../components/Movie/Movie2.jsx';
 
 function Home() {
   const [movieName, setMovieName] = useState('');
@@ -10,9 +11,11 @@ function Home() {
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [newMovieTitle, setNewMovieTitle] = useState('');
   const [newMovieDate, setNewMovieDate] = useState('');
+  const [movieReco, setMovieReco] = useState([]);
   const [sortOption, setSortOption] = useState(null);
   const [fullscreenMovie, setFullscreenMovie] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const[topRated, setTopRated] = useState([]);
 
   const fetchMovies = () => {
     axios.get('http://localhost:8000/movies/')
@@ -22,6 +25,45 @@ function Home() {
       .catch((err) => console.error(err));
   };
 
+  const fetchTopRated = () => {
+    const options = {
+      method: 'GET',
+      url: 'https://api.themoviedb.org/3/movie/top_rated',
+      params: {language: 'en-US', page: '1'},
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZjlmNjAwMzY4MzMzODNkNGIwYjNhNzJiODA3MzdjNCIsInN1YiI6IjY0NzA5YmE4YzVhZGE1MDBkZWU2ZTMxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Em7Y9fSW94J91rbuKFjDWxmpWaQzTitxRKNdQ5Lh2Eo'
+      }
+    };
+    
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+        setTopRated(response.data.results);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
+  useEffect ( () => {
+    fetchTopRated();
+  },[]);
+
+  const fetchMoviesReco= ()=> {
+    axios.get('http://localhost:8000/recommandation/1')
+      .then((response) => {
+        setMovieReco(response.data);
+      })
+      .catch((err) => console.error(err));
+
+  };
+
+  useEffect(() => {
+    fetchMoviesReco();
+  }, []);
+
   useEffect(() => {
     fetchMovies();
   }, []);
@@ -29,31 +71,13 @@ function Home() {
   useEffect(() => {
     if (movies) {
       let sortedMovies = [...movies];
-      // Tri des films en fonction de l'option sélectionnée
-      if (sortOption === 'genre') {
-        const sortMoviesByGenre = (movies) => {
-          // Copie des films pour ne pas modifier l'original
-          let sortedMovies = [...movies];
-          // Création d'un ensemble de genres uniques
-          const uniqueGenres = [...new Set(sortedMovies.map(movie => movie.genre))];
-          // Tri des genres par ordre alphabétique
-          uniqueGenres.sort((a, b) => a.localeCompare(b));
-          // Tri des films en fonction des genres triés
-          sortedMovies.sort((a, b) => {
-            const genreA = a.genre.toLowerCase();
-            const genreB = b.genre.toLowerCase();
-            const indexA = uniqueGenres.indexOf(genreA);
-            const indexB = uniqueGenres.indexOf(genreB);
-            return indexA - indexB;
-          });
-          return sortedMovies;
-        };
-        sortedMovies = sortMoviesByGenre(sortedMovies);
+      if (sortOption === 'For you') {
+        sortedMovies = movieReco;
       } else if (sortOption === 'A-Z') {
         sortedMovies.sort((a, b) => a.title.localeCompare(b.title));
       } else if (sortOption === 'Z-A') {
         sortedMovies.sort((a, b) => b.title.localeCompare(a.title));
-      } else if (sortOption === 'dernieres-sorties') {
+      } else if (sortOption === 'Latest-releases') {
         sortedMovies.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
       }
       // Filtrer les films en fonction du nom
@@ -84,18 +108,17 @@ function Home() {
     <div className="App">
       <header className="App-header">
       <div className="search-container">
-  <span>Rechercher un film</span>
+  <span>Search a movie</span>
   <input
     id="name-input"
     value={movieName}
     onChange={(event) => setMovieName(event.target.value)}
-    placeholder="Entrez le nom du film..."
+    placeholder="Spiderman"
   />
 </div>
-        <p>{movieName}</p>
-        <h3 onClick={() => setShowAddForm(true)} >Ajouter un nouveau film</h3>
+        <h3 onClick={() => setShowAddForm(!showAddForm)} >Add a new movie</h3>
         {showAddForm&& (<form onSubmit={handleSubmit}>
-              <label htmlFor="title">Titre:</label>
+              <label htmlFor="title">Title:</label>
               <input type="text" id="title" name="movie_title" value={newMovieTitle}
                 onChange={(event) => setNewMovieTitle(event.target.value)} />
               <label htmlFor="date">Date:</label>
@@ -104,18 +127,40 @@ function Home() {
               <button type="submit" className="button">Submit</button>
 
         </form>)}
+        {!movieName&& (
+        < div className = "reco">
+          <h1>Best rated on TMDB</h1>
+          <ul className="liste">
+              {topRated.slice(0, 7).map((movie) => (
+                <Movie2 key={movie.id} movie={movie} />
+              ))}
+            </ul>
+        </div>)}
+
+    {!movieName&& (
+        < div className = "reco">
+          <h1>Recommended for you</h1>
+          <ul className="liste">
+              {movieReco.slice(0, 7).map((movie) => (
+                <Movie key={movie.id} movie={movie} />
+              ))}
+            </ul>
+        </div>)}
+        <div className = "movie-title">
+        <h1>All movies</h1></div>
         <div className="deroul">
-          <span>Trier par</span>
+          <span>Sort by</span>
           <div>
-            <input type="button" value="genre" onClick={() => setSortOption('genre')} />
+
             <input type="button" value="A-Z" onClick={() => setSortOption('A-Z')} />
             <input type="button" value="Z-A" onClick={() => setSortOption('Z-A')} />
-            <input type="button" value="dernières sorties" onClick={() => setSortOption('dernieres-sorties')} />
+            <input type="button" value="Latest-release" onClick={() => setSortOption('Latest-release')} />
+            <input type="button" value="For you" onClick={() => setSortOption('For you')} />
           </div>
         </div>
         {movies && (
           <div className="movie-list">
-            <h3>Movie List:</h3>
+
             <ul className="liste">
               {filteredMovies.map((movie) => (
                 <Movie key={movie.id} movie={movie} />

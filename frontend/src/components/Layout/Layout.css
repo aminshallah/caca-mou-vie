@@ -1,9 +1,9 @@
 .Layout-container {
-  background-color: #282c34;
+  background-color: #EEE8E8;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  color: white;
+  color: #ae8964;
 }
 
 .Layout-content {
