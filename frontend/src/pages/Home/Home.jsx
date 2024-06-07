@@ -3,6 +3,7 @@ import './Home.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Movie from '../../components/Movie/Movie.jsx';
+import Movie2 from '../../components/Movie/Movie2.jsx';
 
 function Home() {
   const [movieName, setMovieName] = useState('');
@@ -70,31 +71,13 @@ function Home() {
   useEffect(() => {
     if (movies) {
       let sortedMovies = [...movies];
-      // Tri des films en fonction de l'option sélectionnée
-      if (sortOption === 'genre') {
-        const sortMoviesByGenre = (movies) => {
-          // Copie des films pour ne pas modifier l'original
-          let sortedMovies = [...movies];
-          // Création d'un ensemble de genres uniques
-          const uniqueGenres = [...new Set(sortedMovies.map(movie => movie.genre))];
-          // Tri des genres par ordre alphabétique
-          uniqueGenres.sort((a, b) => a.localeCompare(b));
-          // Tri des films en fonction des genres triés
-          sortedMovies.sort((a, b) => {
-            const genreA = a.genre.toLowerCase();
-            const genreB = b.genre.toLowerCase();
-            const indexA = uniqueGenres.indexOf(genreA);
-            const indexB = uniqueGenres.indexOf(genreB);
-            return indexA - indexB;
-          });
-          return sortedMovies;
-        };
-        sortedMovies = sortMoviesByGenre(sortedMovies);
+      if (sortOption === 'For you') {
+        sortedMovies = movieReco;
       } else if (sortOption === 'A-Z') {
         sortedMovies.sort((a, b) => a.title.localeCompare(b.title));
       } else if (sortOption === 'Z-A') {
         sortedMovies.sort((a, b) => b.title.localeCompare(a.title));
-      } else if (sortOption === 'dernieres-sorties') {
+      } else if (sortOption === 'Latest-releases') {
         sortedMovies.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
       }
       // Filtrer les films en fonction du nom
@@ -125,18 +108,17 @@ function Home() {
     <div className="App">
       <header className="App-header">
       <div className="search-container">
-  <span>Rechercher un film</span>
+  <span>Search a movie</span>
   <input
     id="name-input"
     value={movieName}
     onChange={(event) => setMovieName(event.target.value)}
-    placeholder="Entrez le nom du film..."
+    placeholder="Spiderman"
   />
 </div>
-        <p>{movieName}</p>
-        <h3 onClick={() => setShowAddForm(!showAddForm)} >Ajouter un nouveau film</h3>
+        <h3 onClick={() => setShowAddForm(!showAddForm)} >Add a new movie</h3>
         {showAddForm&& (<form onSubmit={handleSubmit}>
-              <label htmlFor="title">Titre:</label>
+              <label htmlFor="title">Title:</label>
               <input type="text" id="title" name="movie_title" value={newMovieTitle}
                 onChange={(event) => setNewMovieTitle(event.target.value)} />
               <label htmlFor="date">Date:</label>
@@ -147,32 +129,33 @@ function Home() {
         </form>)}
         {!movieName&& (
         < div className = "reco">
-          <h1>Les mieux notés</h1>
+          <h1>Best rated on TMDB</h1>
           <ul className="liste">
               {topRated.slice(0, 7).map((movie) => (
-                <Movie key={movie.id} movie={movie} />
+                <Movie2 key={movie.id} movie={movie} />
               ))}
             </ul>
         </div>)}
 
     {!movieName&& (
         < div className = "reco">
-          <h1>Recommandé pour vous</h1>
+          <h1>Recommended for you</h1>
           <ul className="liste">
-              {movieReco.map((movie) => (
+              {movieReco.slice(0, 7).map((movie) => (
                 <Movie key={movie.id} movie={movie} />
               ))}
             </ul>
         </div>)}
-
-        <h1>Tous les films</h1>
+        <div className = "movie-title">
+        <h1>All movies</h1></div>
         <div className="deroul">
-          <span>Trier par</span>
+          <span>Sort by</span>
           <div>
-            <input type="button" value="genre" onClick={() => setSortOption('genre')} />
+
             <input type="button" value="A-Z" onClick={() => setSortOption('A-Z')} />
             <input type="button" value="Z-A" onClick={() => setSortOption('Z-A')} />
-            <input type="button" value="dernières sorties" onClick={() => setSortOption('dernieres-sorties')} />
+            <input type="button" value="Latest-release" onClick={() => setSortOption('Latest-release')} />
+            <input type="button" value="For you" onClick={() => setSortOption('For you')} />
           </div>
         </div>
         {movies && (

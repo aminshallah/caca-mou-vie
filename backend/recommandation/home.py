@@ -79,7 +79,7 @@ def recommendations(userId):
     df['AlreadyRated'] = df['note'] > 0
     recommended_movies = df.sort_values(by=['AlreadyRated', 'Similarity'], ascending=[True, False])
 
-    return (recommended_movies['id'].tolist())[:7]
+    return (recommended_movies['id'].tolist())
 
 if __name__ == "__main__":
     userId = sys.argv[1]

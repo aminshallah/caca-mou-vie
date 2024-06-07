@@ -20,7 +20,6 @@ const fetchAndStoreMovies = async () => {
     const movieRepository = appDataSource.getRepository(Movie);
     let allMovies = [];
     
-    // Fetch multiple pages to get at least 100 movies
     const totalMovies = 100;
     const moviesPerPage = 20;
     const pagesToFetch = Math.ceil(totalMovies / moviesPerPage);
@@ -34,14 +33,14 @@ const fetchAndStoreMovies = async () => {
       allMovies = allMovies.concat(response.data.results);
     }
 
-    // Fetch detailed information for each movie
+
     const movieDetailsPromises = allMovies.slice(0, totalMovies).map((movie) =>
       axios.get(`${TMDB_BASE_URL}/movie/${movie.id}?language=en-US&append_to_response=credits`, options)
     );
 
     const moviesDetails = await Promise.all(movieDetailsPromises);
 
-    // Insert each movie into the database
+
     for (const detailResponse of moviesDetails) {
       const movieData = detailResponse.data;
       const newMovie = movieRepository.create({

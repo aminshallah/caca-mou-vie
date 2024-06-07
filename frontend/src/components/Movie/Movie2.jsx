@@ -1,4 +1,4 @@
-import './Movie.css';
+import './Movie2.css';
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios'
 
@@ -12,20 +12,18 @@ const DEFAULT_MOVIE_VALUES = {
   img : ''
 };
 
-function Movie({ movie }) {
+function Movie2({ movie }) {
   const [movieValue, setMovieValue] = useState(DEFAULT_MOVIE_VALUES);
   const [fullscreenMovie, setFullscreenMovie] = useState(null);
+  const fullscreenRef = useRef(null);
   const user = 1;
 
   useEffect(() => {
     setMovieValue({
       title: movie.title,
-      date: movie.date,
-      synopsis : movie.synopsis,
-      duration : movie.duration,
-      mainActors : movie.mainActors,
-      genre : movie.genre,
-      img : movie.posterPath
+      date: movie.release_date,
+      synopsis : movie.overview,
+      img : movie.poster_path
     });
   }, [movie]);
 
@@ -56,7 +54,7 @@ function Movie({ movie }) {
             className="movie-poster"
           />
         </li>
-        {fullscreenMovie && (
+        {/* {fullscreenMovie && (
         <div className="fullscreen-overlay" onClick={closeFullscreenMovie}>
           <div className="fullscreen-modal" onClick={(e) => e.stopPropagation()}>
             {<img
@@ -67,11 +65,7 @@ function Movie({ movie }) {
             <div className="movie-details">
             <h2>{fullscreenMovie.title}</h2>
             <p>{fullscreenMovie.synopsis}</p>
-            <p><strong>Release date:</strong> {fullscreenMovie.date}</p>
-            <p><strong>Duration:</strong> {fullscreenMovie.duration} minutes</p>
-            <p><strong>Director:</strong> {fullscreenMovie.director}</p>
-            <p><strong>Main actors:</strong> {fullscreenMovie.mainActors}</p>
-            <p><strong>Genre:</strong> {fullscreenMovie.genre}</p>
+            <p><strong>Date de sortie:</strong> {fullscreenMovie.date}</p>
             <button onClick={closeFullscreenMovie}>Close</button><div>
             <div className = "button-row">
             <input type="button" value="💩" onClick={() => {sendNote(1)}} />
@@ -85,9 +79,9 @@ function Movie({ movie }) {
           </div>
           </div>
         </div>
-      )}
+      )} */}
       </>
     );
   }
 
-export default Movie;
+export default Movie2;

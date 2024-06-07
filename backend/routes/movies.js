@@ -17,7 +17,7 @@ router.get('/',(req,res) => {
 router.get('/:id', async (req, res) => {
   const movieRepository = appDataSource.getRepository(Movie);
   try {
-    const movieId = parseInt(req.params.id);  // Extraire l'ID depuis l'URL
+    const movieId = parseInt(req.params.id);  
     const movie = await movieRepository.findOneBy({ id: movieId });
     if (!movie) {
       return res.status(404).json({ message: 'Movie not found' });
