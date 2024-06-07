@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post('/update', async (req, res) => {
   const { userId, filmId, note } = req.body;
+  console.log(req.body);
 
   if (!userId || !filmId || !note || note < 1 || note > 5) {
     return res.status(400).json({ message: 'Invalid data. Please provide valid userId, filmId, and note (between 1 and 5).' });

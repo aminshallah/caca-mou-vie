@@ -24,7 +24,7 @@ const Header = () => {
         All
       </Link>
     </div> */
-    <h1 className="Header-container"> cacamouvie </h1>
+    <h1 className="Header-container"> FilmHub </h1>
   );
 };
 

@@ -10,9 +10,11 @@ function Home() {
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [newMovieTitle, setNewMovieTitle] = useState('');
   const [newMovieDate, setNewMovieDate] = useState('');
+  const [movieReco, setMovieReco] = useState([]);
   const [sortOption, setSortOption] = useState(null);
   const [fullscreenMovie, setFullscreenMovie] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const[topRated, setTopRated] = useState([]);
 
   const fetchMovies = () => {
     axios.get('http://localhost:8000/movies/')
@@ -21,6 +23,45 @@ function Home() {
       })
       .catch((err) => console.error(err));
   };
+
+  const fetchTopRated = () => {
+    const options = {
+      method: 'GET',
+      url: 'https://api.themoviedb.org/3/movie/top_rated',
+      params: {language: 'en-US', page: '1'},
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZjlmNjAwMzY4MzMzODNkNGIwYjNhNzJiODA3MzdjNCIsInN1YiI6IjY0NzA5YmE4YzVhZGE1MDBkZWU2ZTMxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Em7Y9fSW94J91rbuKFjDWxmpWaQzTitxRKNdQ5Lh2Eo'
+      }
+    };
+    
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+        setTopRated(response.data.results);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
+  useEffect ( () => {
+    fetchTopRated();
+  },[]);
+
+  const fetchMoviesReco= ()=> {
+    axios.get('http://localhost:8000/recommandation/1')
+      .then((response) => {
+        setMovieReco(response.data);
+      })
+      .catch((err) => console.error(err));
+
+  };
+
+  useEffect(() => {
+    fetchMoviesReco();
+  }, []);
 
   useEffect(() => {
     fetchMovies();
@@ -93,7 +134,7 @@ function Home() {
   />
 </div>
         <p>{movieName}</p>
-        <h3 onClick={() => setShowAddForm(true)} >Ajouter un nouveau film</h3>
+        <h3 onClick={() => setShowAddForm(!showAddForm)} >Ajouter un nouveau film</h3>
         {showAddForm&& (<form onSubmit={handleSubmit}>
               <label htmlFor="title">Titre:</label>
               <input type="text" id="title" name="movie_title" value={newMovieTitle}
@@ -104,6 +145,27 @@ function Home() {
               <button type="submit" className="button">Submit</button>
 
         </form>)}
+        {!movieName&& (
+        < div className = "reco">
+          <h1>Les mieux notés</h1>
+          <ul className="liste">
+              {topRated.slice(0, 7).map((movie) => (
+                <Movie key={movie.id} movie={movie} />
+              ))}
+            </ul>
+        </div>)}
+
+    {!movieName&& (
+        < div className = "reco">
+          <h1>Recommandé pour vous</h1>
+          <ul className="liste">
+              {movieReco.map((movie) => (
+                <Movie key={movie.id} movie={movie} />
+              ))}
+            </ul>
+        </div>)}
+
+        <h1>Tous les films</h1>
         <div className="deroul">
           <span>Trier par</span>
           <div>
@@ -115,7 +177,7 @@ function Home() {
         </div>
         {movies && (
           <div className="movie-list">
-            <h3>Movie List:</h3>
+
             <ul className="liste">
               {filteredMovies.map((movie) => (
                 <Movie key={movie.id} movie={movie} />

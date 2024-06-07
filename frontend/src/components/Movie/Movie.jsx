@@ -16,7 +16,6 @@ function Movie({ movie }) {
   const [movieValue, setMovieValue] = useState(DEFAULT_MOVIE_VALUES);
   const [fullscreenMovie, setFullscreenMovie] = useState(null);
   const fullscreenRef = useRef(null);
-  const [rankingValue, setRankingValue] = useState(0)
   const user = 1;
 
   useEffect(() => {
@@ -41,8 +40,8 @@ function Movie({ movie }) {
       setFullscreenMovie(null);
     };
 
-    const sendNote = () => {
-      axios.post('http://localhost:8000/notes/update', { userId: user, filmId: fullscreenMovie.id, note : rankingValue })
+    const sendNote = (note) => {
+      axios.post('http://localhost:8000/notes/update', { userId: 1, filmId: fullscreenMovie.id, note : note })
         .then(response => {
           console.log(response.data);
         })
@@ -76,11 +75,11 @@ function Movie({ movie }) {
             <p><strong>Genre:</strong> {fullscreenMovie.genre}</p>
             <button onClick={closeFullscreenMovie}>Close</button><div>
             <div className = "button-row">
-            <input type="button" value="💩" onClick={() => {setRankingValue(1); sendNote()}} />
-            <input type="button" value="🤒" onClick={() => {setRankingValue(2); sendNote()}} />
-            <input type="button" value="😐" onClick={() => {setRankingValue(3); sendNote()}} />
-            <input type="button" value="🥰" onClick={() => {setRankingValue(4); sendNote()}} />
-            <input type="button" value="🥵" onClick={() => {setRankingValue(5); sendNote()}} />
+            <input type="button" value="💩" onClick={() => {sendNote(1)}} />
+            <input type="button" value="🤒" onClick={() => {sendNote(2)}} />
+            <input type="button" value="😐" onClick={() => {sendNote(3)}} />
+            <input type="button" value="🥰" onClick={() => {sendNote(4)}} />
+            <input type="button" value="🥵" onClick={() => {sendNote(5)}} />
 
           </div>
               </div>
